@@ -20,9 +20,10 @@ logger = logging.getLogger(__name__)
 class ContentFormat(str, Enum):
     STORAGE = "body.storage"
     VIEW = "body.view"
+    STORAGE_VERSION = "body.storage.value,version"
 
     def get_content(self, page: dict) -> str:
-        if self == ContentFormat.STORAGE:
+        if self in [ContentFormat.STORAGE, ContentFormat.STORAGE_VERSION]:
             return page["body"]["storage"]["value"]
         elif self == ContentFormat.VIEW:
             return page["body"]["view"]["value"]
@@ -454,6 +455,7 @@ class ConfluenceLoader(BaseLoader):
                 "title": page["title"],
                 "id": page["id"],
                 "source": self.base_url.strip("/") + page["_links"]["webui"],
+                "version": page["version"]["when"],
             },
         )
 
